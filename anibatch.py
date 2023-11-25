@@ -1,9 +1,21 @@
 import requests
 import os
+import configparser
+
+
+#Reading config
+config = configparser.ConfigParser()
+config.read("config.ini")
+
+site = config.get("AniBatch", "site")
+path = config.get("AniBatch", "path")
+API = config.get("AniBatch", "API")
+
+
 # Searching
 IN = input("What's the name of the anime | ")
 IN = IN.replace(" ", "-").replace("/", "-")  # Replace spaces and slashes with hyphens
-url = f"https://api.consumet.org/anime/gogoanime/{IN}"
+url = f"{API}/anime/{site}/{IN}"
 
 response = requests.get(url)
 animelist = response.json()
@@ -29,9 +41,22 @@ except ValueError:
 
 # Fetching Show Information
 print("Fetching info...")
-url = "https://api.consumet.org/anime/gogoanime/info/" + selected_id
-response = requests.get(url)
-data = response.json()
+if site == "gogoanime":
+    url = f"{API}/anime/{site}/info/" + selected_id
+    response = requests.get(url)
+    data = response.json()
+else: 
+    url = f"{API}/anime/zoro/info?id={selected_id}"
+    response = requests.get(url)
+    data = response.json()
+    id = data.get("number", [])
+    print(id)
+
+
+ 
+    #print(data)
+    #data = response.json()
+    #print(data)
 
 if response.status_code == 200:
     episodes = data.get("episodes", [])
@@ -44,8 +69,13 @@ if response.status_code == 200:
         # Print the highest episode number
         print("Highest Episode:", highest_episode["number"])
 
+
         # Fetching Links and Downloading Episodes
-        linksurl_base = f"https://api.consumet.org/anime/gogoanime/watch/{selected_id}-episode-"
+        if site == "gogoanime":
+            linksurl_base = f"{API}/anime/{site}/watch/{selected_id}-episode-"
+        else:
+            linksurl_base = f"{API}/anime/{site}/watch/"
+
 
         # Set a default quality (e.g., '720p')
 
@@ -110,7 +140,7 @@ if response.status_code == 200:
 
 
 
-                os.system("ffmpeg -i " + Download_ID + " -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 " + output_filename)
+                os.system("ffmpeg -i " + Download_ID + " -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 "+ path + output_filename)
 
             else:
                 print(f"Default quality ({default_quality}) not available for Episode {episode_number_str}. Skipping.")
