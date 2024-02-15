@@ -10,3 +10,10 @@ AniBatch only exists as a convenient way to enjoy Downloaded content from suppor
 
 
 The core of this project revolves around the smooth integration of automation and efficiency to leverage internet content. It's crucial to emphasize that all the content retrieved through this project originates from external, non-affiliated platforms.
+
+
+---Requriements---
+
+  Ffmpeg
+  Python 3
+
