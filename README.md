@@ -14,6 +14,6 @@ The core of this project revolves around the smooth integration of automation an
 
 ---Requriements---
 
-  Ffmpeg
-  Python 3
+    FFmpeg
+    Python 3
 
